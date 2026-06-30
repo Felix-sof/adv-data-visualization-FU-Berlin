@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homework 4 — Antibiotic Resistance & Color Schemes</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:       #0e0f13;
+      --bg2:      #16181f;
+      --bg3:      #1e2029;
+      --border:   #2a2d3a;
+      --text:     #e8eaf0;
+      --muted:    #7a7f96;
+      --accent:   #f0c060;
+      --accent2:  #7eb8f0;
+      --accent3:  #a8e6a3;
+      --danger:   #f07070;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #0e0f13 0%, #1a1c28 60%, #0d1520 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 48px 36px;
+      position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(240,192,96,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .label::before { content: ''; display: inline-block; width: 28px; height: 1px; background: var(--accent); }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(26px, 3.5vw, 48px);
+      font-weight: 400; line-height: 1.15; color: var(--text);
+      max-width: 680px; margin-bottom: 12px;
+    }
+    h1 em { color: var(--accent); font-style: italic; }
+    .header-sub { color: var(--muted); font-size: 14px; max-width: 580px; }
+
+    /* ── Main ── */
+    main { max-width: 1320px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 44px 0; }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 6px;
+    }
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(18px, 2.2vw, 28px); font-weight: 400;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .intro { color: var(--muted); font-size: 14px; max-width: 780px; margin-bottom: 28px; line-height: 1.8; }
+    .intro strong { color: var(--text); }
+
+    /* ── Chart grid ── */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px; margin-bottom: 40px;
+    }
+    @media (max-width: 860px) { .chart-grid { grid-template-columns: 1fr; } }
+
+    .chart-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .chart-card:hover { border-color: rgba(240,192,96,0.4); transform: translateY(-2px); }
+
+    .card-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    }
+    .card-title { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); }
+    .card-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .badge {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      padding: 3px 10px; border-radius: 100px; letter-spacing: 0.08em; white-space: nowrap;
+    }
+    .b-greys   { background: rgba(150,150,150,.12); color: #aaa;    border: 1px solid rgba(150,150,150,.25); }
+    .b-viridis { background: rgba(80,180,120,.10);  color: #7ecfa0; border: 1px solid rgba(80,180,120,.25); }
+    .b-rainbow { background: rgba(220,100,180,.10); color: #d87ec0; border: 1px solid rgba(220,100,180,.25); }
+    .b-yor     { background: rgba(240,160,60,.10);  color: #f0b050; border: 1px solid rgba(240,160,60,.25); }
+
+    .chart-wrap { padding: 18px; display: flex; justify-content: center; }
+    .chart-wrap > div { width: 100%; }
+
+    /* ── Accessibility table ── */
+    .a11y-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 14px; margin-bottom: 36px;
+    }
+    @media (max-width: 860px) { .a11y-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .a11y-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 18px;
+    }
+    .a11y-scheme {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .a11y-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .ok   { background: var(--accent3); }
+    .warn { background: var(--accent); }
+    .fail { background: var(--danger); }
+    .a11y-verdict { margin-top: 10px; font-size: 12px; }
+
+    /* ── Preference box ── */
+    .pref-box {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 10px 10px 0; padding: 24px 28px; margin-bottom: 40px;
+    }
+    .pref-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .pref-verdict { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 10px; }
+    .pref-text { color: var(--muted); font-size: 14px; line-height: 1.85; max-width: 800px; }
+    .pref-text strong { color: var(--text); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 48px;
+      display: flex; gap: 16px; align-items: center; justify-content: space-between;
+      color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px;
+    }
+    footer a { color: var(--accent2); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="label">Homework 4 — Altair: Scales, Axes &amp; Legends</div>
+  <h1>Antibiotic Resistance &amp;<br><em>Color Scheme Comparison</em></h1>
+  <p class="header-sub">
+    Small-multiple heatmap of Penicillin MIC across 16 bacterial strains —
+    four Vega color schemes with accessibility analysis.
+  </p>
+</header>
+
+<main>
+
+  <!-- ── Charts ── -->
+  <div class="section-label" style="margin-top:8px;">Small Multiples</div>
+  <h2>Penicillin MIC — Four Color Schemes</h2>
+  <p class="intro">
+    Identical data, same log-scale domain. Only the <strong>color scheme</strong> changes.
+    Bacteria sorted by resistance (most resistant → top).
+    Lower MIC = more effective antibiotic.
+    <strong>Hover over any cell</strong> for exact values.
+  </p>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-header">
+        <div><div class="card-title">scheme: greys</div><div class="card-sub">Sequential — luminance only</div></div>
+        <span class="badge b-greys">greys</span>
+      </div>
+      <div class="chart-wrap"><div id="c-greys"></div></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <div><div class="card-title">scheme: viridis</div><div class="card-sub">Sequential — hue + luminance, perceptually uniform</div></div>
+        <span class="badge b-viridis">viridis</span>
+      </div>
+      <div class="chart-wrap"><div id="c-viridis"></div></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <div><div class="card-title">scheme: rainbow</div><div class="card-sub">Cyclic hue — luminance not monotone</div></div>
+        <span class="badge b-rainbow">rainbow</span>
+      </div>
+      <div class="chart-wrap"><div id="c-rainbow"></div></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header">
+        <div><div class="card-title">scheme: yelloworangered</div><div class="card-sub">Sequential — warm ramp, semantically natural</div></div>
+        <span class="badge b-yor">yelloworangered</span>
+      </div>
+      <div class="chart-wrap"><div id="c-yor"></div></div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ── Accessibility ── -->
+  <div class="section-label">Accessibility — Coblis Simulation</div>
+  <h2>Color Blindness Analysis</h2>
+  <p class="intro">
+    Evaluated via <a href="https://www.color-blindness.com/coblis-color-blindness-simulator/" target="_blank" style="color:var(--accent2)">Coblis</a>
+    against four deficiencies: <strong>Deuteranopia</strong> (~6% of men),
+    <strong>Protanopia</strong> (~1% of men), <strong>Tritanopia</strong> (rare),
+    <strong>Achromatopsia</strong> (total).
+  </p>
+
+  <div class="a11y-grid">
+    <div class="a11y-card">
+      <div class="a11y-scheme" style="color:#aaa;">Greys</div>
+      <div class="a11y-row"><span class="dot ok"></span>Deuteranopia — unaffected</div>
+      <div class="a11y-row"><span class="dot ok"></span>Protanopia — unaffected</div>
+      <div class="a11y-row"><span class="dot ok"></span>Tritanopia — unaffected</div>
+      <div class="a11y-row"><span class="dot ok"></span>Achromatopsia — fully readable</div>
+      <div class="a11y-verdict" style="color:var(--accent3);">★ Most accessible</div>
+    </div>
+    <div class="a11y-card">
+      <div class="a11y-scheme" style="color:#7ecfa0;">Viridis</div>
+      <div class="a11y-row"><span class="dot ok"></span>Deuteranopia — yellow→blue ok</div>
+      <div class="a11y-row"><span class="dot ok"></span>Protanopia — preserved well</div>
+      <div class="a11y-row"><span class="dot warn"></span>Tritanopia — slight blue shift</div>
+      <div class="a11y-row"><span class="dot warn"></span>Achromatopsia — luminance readable</div>
+      <div class="a11y-verdict" style="color:var(--accent3);">★ Excellent accessibility</div>
+    </div>
+    <div class="a11y-card">
+      <div class="a11y-scheme" style="color:#d87ec0;">Rainbow</div>
+      <div class="a11y-row"><span class="dot fail"></span>Deuteranopia — red/green collapse</div>
+      <div class="a11y-row"><span class="dot fail"></span>Protanopia — red band lost</div>
+      <div class="a11y-row"><span class="dot warn"></span>Tritanopia — partially readable</div>
+      <div class="a11y-row"><span class="dot fail"></span>Achromatopsia — false ordering</div>
+      <div class="a11y-verdict" style="color:var(--danger);">✗ Least accessible</div>
+    </div>
+    <div class="a11y-card">
+      <div class="a11y-scheme" style="color:#f0b050;">Yelloworangered</div>
+      <div class="a11y-row"><span class="dot warn"></span>Deuteranopia — orange/red compress</div>
+      <div class="a11y-row"><span class="dot fail"></span>Protanopia — red endpoint dulled</div>
+      <div class="a11y-row"><span class="dot ok"></span>Tritanopia — warm hues preserved</div>
+      <div class="a11y-row"><span class="dot warn"></span>Achromatopsia — luminance ok</div>
+      <div class="a11y-verdict" style="color:var(--accent);">△ Good; caution w/ protanopia</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ── Preference ── -->
+  <div class="section-label">Conclusion</div>
+  <div class="pref-box">
+    <div class="pref-label">Preference: Color scheme</div>
+    <div class="pref-verdict">yelloworangered — with viridis as accessibility fallback</div>
+    <p class="pref-text">
+      <strong>Yelloworangered</strong> encodes the data's semantics directly: yellow = diluted / effective,
+      deep red = high dose needed / resistant. This maps onto natural warning conventions (traffic lights,
+      heat alerts), reducing cognitive load. Its main weakness is <strong>protanopia</strong> — the red
+      endpoint loses saturation. Where accessibility is critical, <strong>viridis</strong> is the better
+      choice: perceptually uniform by design and robust under all four major color vision deficiencies.
+      <strong>Rainbow</strong> should be avoided for sequential quantitative data — its non-monotone
+      luminance creates a false mid-range peak and fails badly under color-blindness simulation.
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <span>Homework 4 — Scales, Axes &amp; Legends</span>
+  <span>Data: <a href="https://github.com/vega/vega-datasets" target="_blank">vega-datasets / burtin.json</a></span>
+  <span>Accessibility: <a href="https://www.color-blindness.com/coblis-color-blindness-simulator/" target="_blank">Coblis</a></span>
+  <span>Rendered with <a href="https://vega.github.io/vega-lite/" target="_blank">Vega-Lite 5</a></span>
+</footer>
+
+<script>
+  const DATA_URL = "https://cdn.jsdelivr.net/npm/vega-datasets@2/data/burtin.json";
+
+  function spec(scheme) {
+    return {
+      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+      data: { url: DATA_URL },
+      background: "transparent",
+      mark: "rect",
+      encoding: {
+        y: {
+          field: "Bacteria", type: "nominal",
+          sort: { field: "Penicillin", op: "max", order: "descending" },
+          axis: {
+            orient: "right", title: null,
+            labelFont: "DM Mono, monospace", labelFontSize: 11,
+            labelColor: "#7a7f96", tickColor: "#2a2d3a", domainColor: "#2a2d3a"
+          }
+        },
+        color: {
+          field: "Penicillin", type: "quantitative",
+          scale: { type: "log", scheme: scheme, nice: true },
+          legend: {
+            titleOrient: "right", tickCount: 5,
+            title: "Penicillin MIC (µg/ml)",
+            titleFont: "DM Mono, monospace", titleFontSize: 10,
+            labelFont: "DM Mono, monospace", labelFontSize: 10,
+            labelColor: "#7a7f96", titleColor: "#e8eaf0"
+          }
+        },
+        tooltip: [
+          { field: "Bacteria",      type: "nominal",      title: "Bacterium" },
+          { field: "Penicillin",    type: "quantitative", title: "MIC (µg/ml)", format: ".4f" },
+          { field: "Gram_Staining", type: "nominal",      title: "Gram Staining" }
+        ]
+      },
+      width: "container",
+      height: 340
+    };
+  }
+
+  const opts = { renderer: "canvas", actions: { export: true, source: false, compiled: false, editor: false } };
+
+  [["c-greys","greys"],["c-viridis","viridis"],["c-rainbow","rainbow"],["c-yor","yelloworangered"]]
+    .forEach(([id, s]) => vegaEmbed(`#${id}`, spec(s), opts).catch(console.error));
+</script>
+</body>
+</html>
