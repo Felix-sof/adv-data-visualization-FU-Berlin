@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Homework 3 – Movie Ratings Heatmaps</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <style>
+    :root {
+      --bg:        #0f0f11;
+      --surface:   #18181c;
+      --border:    #2a2a32;
+      --text:      #e8e8f0;
+      --muted:     #7a7a8e;
+      --accent:    #7fbf7b;
+      --accent2:   #af8dc3;
+      --mono:      'DM Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Header ── */
+    header {
+      max-width: 960px;
+      margin: 0 auto 3.5rem;
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 span { color: var(--accent2); }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    /* ── Pills ── */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .pill {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Charts grid ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    .card:nth-child(2) { animation-delay: 0.12s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .swatch-diverging {
+      background: linear-gradient(135deg, #762a83, #f7f7f7 50%, #1b7837);
+    }
+
+    .swatch-sequential {
+      background: linear-gradient(135deg, #ffffff, #3182bd 60%, #08519c);
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .vega-wrap { width: 100%; }
+
+    /* force Vega canvas to fill card */
+    .vega-embed { width: 100% !important; }
+    .vega-embed canvas,
+    .vega-embed svg { width: 100% !important; height: auto !important; }
+
+    /* ── Footer note ── */
+    .note {
+      max-width: 960px;
+      margin: 2.5rem auto 0;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .note-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="tag">Homework 3 · Altair Data Transformation</p>
+    <h1>Movie Ratings Heatmap<br><span>Rotten Tomatoes vs. IMDB</span></h1>
+    <p class="subtitle">
+      Two-dimensional histogram comparing critic and audience ratings across 3 201 films.
+      Hover over any cell to see bin boundaries and exact film counts.
+    </p>
+    <div class="pills">
+      <span class="pill">colorblind-safe</span>
+      <span class="pill">diverging · PRGn</span>
+      <span class="pill">sequential · blues</span>
+      <span class="pill">tooltips</span>
+      <span class="pill">cell outlines</span>
+    </div>
+  </header>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="swatch swatch-diverging"></div>
+        <div>
+          <p class="card-title">Diverging Palette — PRGn</p>
+          <p class="card-desc">5-step ColorBrewer PRGn. Purple = sparse · Green = dense.<br>Safe for deuteranopia, protanopia &amp; tritanopia.</p>
+        </div>
+      </div>
+      <div class="vega-wrap" id="plot-diverging"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="swatch swatch-sequential"></div>
+        <div>
+          <p class="card-title">Sequential Palette — Blues</p>
+          <p class="card-desc">White = sparse · Dark blue = dense. Cell outlines shown.<br>Single-hue luminance ramp, universally accessible.</p>
+        </div>
+      </div>
+      <div class="vega-wrap" id="plot-sequential"></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="note-icon">♿</span>
+    <span>Both palettes are confirmed colorblind-safe. PRGn (purple–green) works because the two hues differ in luminance, not just hue. The Blues ramp relies solely on luminance, making it safe for all forms of colour vision deficiency. Tooltips compensate for any residual colour perception difficulty.</span>
+  </div>
+
+  <script>
+    const MOVIES_URL = 'https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/movies.json';
+
+    // ── Shared pieces ──────────────────────────────────────────────────────────
+    const xEnc = {
+      field: 'Rotten_Tomatoes_Rating', type: 'quantitative',
+      bin: { maxbins: 20 }, title: 'Rotten Tomatoes Rating'
+    };
+    const yEnc = {
+      field: 'IMDB_Rating', type: 'quantitative',
+      bin: { maxbins: 20 }, title: 'IMDB Rating'
+    };
+    const tooltip = [
+      { field: 'Rotten_Tomatoes_Rating', type: 'quantitative', bin: { maxbins: 20 }, title: 'RT Rating (bin)' },
+      { field: 'IMDB_Rating',            type: 'quantitative', bin: { maxbins: 20 }, title: 'IMDB Rating (bin)' },
+      { aggregate: 'count', title: 'Number of Films' }
+    ];
+
+    const baseSpec = {
+      $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+      data: { url: MOVIES_URL },
+      mark: { type: 'rect', stroke: 'white', strokeWidth: 0.75 },
+      encoding: { x: xEnc, y: yEnc, tooltip },
+      width: 'container',
+      height: 340
+    };
+
+    // ── Plot 1: Diverging PRGn ─────────────────────────────────────────────────
+    const prgn5 = ['#762a83', '#af8dc3', '#f7f7f7', '#7fbf7b', '#1b7837'];
+
+    const specDiverging = {
+      ...baseSpec,
+      encoding: {
+        ...baseSpec.encoding,
+        color: {
+          aggregate: 'count', type: 'quantitative',
+          scale: { range: prgn5, domainMid: 0 },
+          legend: { title: 'Number of Films', titleColor: '#e8e8f0', labelColor: '#7a7a8e' }
+        }
+      }
+    };
+
+    // ── Plot 2: Sequential Blues, low = white ──────────────────────────────────
+    const blues5 = ['#ffffff', '#deebf7', '#9ecae1', '#3182bd', '#08519c'];
+
+    const specSequential = {
+      ...baseSpec,
+      encoding: {
+        ...baseSpec.encoding,
+        color: {
+          aggregate: 'count', type: 'quantitative',
+          scale: { range: blues5 },
+          legend: { title: 'Number of Films', titleColor: '#e8e8f0', labelColor: '#7a7a8e' }
+        }
+      }
+    };
+
+    // ── Render ─────────────────────────────────────────────────────────────────
+    const vegaOpts = {
+      actions: false,
+      theme: 'dark',
+      config: {
+        background: 'transparent',
+        axis:   { gridColor: '#2a2a32', domainColor: '#2a2a32', tickColor: '#2a2a32',
+                  labelColor: '#7a7a8e', titleColor: '#e8e8f0', labelFontSize: 11, titleFontSize: 12 },
+        legend: { padding: 6 },
+        view:   { stroke: 'transparent' }
+      }
+    };
+
+    vegaEmbed('#plot-diverging',  specDiverging,  vegaOpts);
+    vegaEmbed('#plot-sequential', specSequential, vegaOpts);
+  </script>
+</body>
+</html>
