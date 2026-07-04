@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head><style>
+  html, body {
+    background: #0d1117;
+    margin: 0;
+    padding: 24px;
+    font-family: Courier New, Courier, monospace;
+  }
+</style>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"background": "#0d1117", "view": {"stroke": "transparent", "fill": "#161b22"}, "title": {"color": "#e6edf3", "font": "Courier New, Courier, monospace", "fontSize": 15, "anchor": "start"}, "axis": {"domainColor": "#30363d", "gridColor": "#30363d", "tickColor": "#30363d", "labelColor": "#8b949e", "titleColor": "#e6edf3", "labelFont": "Courier New, Courier, monospace", "titleFont": "Courier New, Courier, monospace", "labelAngle": 0}, "legend": {"labelColor": "#e6edf3", "titleColor": "#e6edf3", "labelFont": "Courier New, Courier, monospace", "titleFont": "Courier New, Courier, monospace"}, "header": {"labelColor": "#e6edf3", "titleColor": "#e6edf3", "labelFont": "Courier New, Courier, monospace", "titleFont": "Courier New, Courier, monospace"}, "concat": {"spacing": 12}, "facet": {"spacing": 8}}, "vconcat": [{"hconcat": [{"repeat": {"column": ["wind", "precipitation", "temp_max"], "row": ["temp_max", "precipitation", "wind"]}, "spec": {"mark": {"type": "point", "color": "#D55E00", "filled": true, "opacity": 0.55, "size": 18}, "encoding": {"tooltip": [{"field": {"repeat": "column"}, "type": "quantitative"}, {"field": {"repeat": "row"}, "type": "quantitative"}, {"field": "weather", "title": "Weather", "type": "nominal"}, {"field": "date", "title": "Date", "type": "temporal"}], "x": {"field": {"repeat": "column"}, "type": "quantitative"}, "y": {"field": {"repeat": "row"}, "type": "quantitative"}}, "height": 125, "name": "view_4720060e7d1fd4ee_0", "width": 125}}, {"repeat": {"row": ["temp_max", "precipitation", "wind"]}, "spec": {"layer": [{"mark": {"type": "bar"}, "encoding": {"tooltip": [{"field": "date", "timeUnit": "month", "title": "Month", "type": "ordinal"}, {"aggregate": "average", "field": {"repeat": "row"}, "format": ".1f", "type": "quantitative"}], "x": {"field": "date", "timeUnit": "month", "title": "Month", "type": "ordinal"}, "y": {"aggregate": "average", "field": {"repeat": "row"}, "type": "quantitative"}}, "name": "view_b6faf740fe0870bf_0"}, {"mark": {"type": "rule", "stroke": "#D55E00", "strokeDash": [4, 3]}, "encoding": {"y": {"aggregate": "average", "field": {"repeat": "row"}, "type": "quantitative"}}}], "height": 125, "width": 175}}]}, {"facet": {"column": {"field": "weather", "type": "nominal"}}, "spec": {"mark": {"type": "bar"}, "encoding": {"color": {"field": "weather", "legend": {"title": "Weather (click to isolate)"}, "scale": {"domain": ["drizzle", "fog", "rain", "snow", "sun"], "range": ["#56B4E9", "#999999", "#0072B2", "#CC79A7", "#E69F00"]}, "type": "nominal"}, "opacity": {"condition": {"param": "weather_legend_select", "value": 1.0}, "value": 0.15}, "tooltip": [{"field": "weather", "title": "Weather", "type": "nominal"}, {"bin": true, "field": "temp_max", "title": "Temp range (\u00b0C)", "type": "quantitative"}, {"aggregate": "count", "title": "Days", "type": "quantitative"}], "x": {"bin": true, "field": "temp_max", "title": "Temperature (\u00b0C)", "type": "quantitative"}, "y": {"aggregate": "count", "type": "quantitative"}}, "height": 100, "name": "view_eba7f02e822954a8_1", "transform": [{"filter": {"param": "city_select"}}], "width": 115}}], "data": {"url": "https://vega.github.io/vega-datasets/data/weather.csv"}, "params": [{"name": "splom_zoom", "select": {"type": "interval"}, "bind": "scales", "views": ["view_4720060e7d1fd4ee_0_child__row_temp_maxcolumn_wind", "view_4720060e7d1fd4ee_0_child__row_temp_maxcolumn_precipitation", "view_4720060e7d1fd4ee_0_child__row_temp_maxcolumn_temp_max", "view_4720060e7d1fd4ee_0_child__row_precipitationcolumn_wind", "view_4720060e7d1fd4ee_0_child__row_precipitationcolumn_precipitation", "view_4720060e7d1fd4ee_0_child__row_precipitationcolumn_temp_max", "view_4720060e7d1fd4ee_0_child__row_windcolumn_wind", "view_4720060e7d1fd4ee_0_child__row_windcolumn_precipitation", "view_4720060e7d1fd4ee_0_child__row_windcolumn_temp_max"]}, {"name": "weather_legend_select", "select": {"type": "point", "fields": ["weather"]}, "bind": "legend", "views": ["view_eba7f02e822954a8_1"]}, {"name": "city_select", "select": {"type": "point", "fields": ["location"]}, "bind": {"input": "select", "options": ["Seattle", "New York"], "name": "City: "}, "value": "Seattle", "views": ["view_eba7f02e822954a8_1"]}], "resolve": {"legend": {"color": "independent"}, "scale": {"color": "independent"}}, "title": "Weather Dashboard", "transform": [{"filter": {"param": "city_select"}}], "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
