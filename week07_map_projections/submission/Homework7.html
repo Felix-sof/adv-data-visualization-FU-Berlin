@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "vconcat": [{"hconcat": [{"mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.1}, "encoding": {"color": {"field": "rate", "scale": {"domain": [0, 0.25], "scheme": "viridis"}, "title": "Unemployment Rate", "type": "quantitative"}, "opacity": {"condition": {"param": "hover_albersUsa", "value": 1, "empty": false}, "value": 0.85}, "stroke": {"condition": {"param": "hover_albersUsa", "value": "black", "empty": false}, "value": "white"}, "strokeWidth": {"condition": {"param": "hover_albersUsa", "value": 1.2, "empty": false}, "value": 0.1}, "tooltip": [{"field": "rate", "format": ".1%", "title": "Rate", "type": "quantitative"}]}, "height": 250, "name": "view_0206279774762453_0", "projection": {"type": "albersUsa"}, "title": "albersUsa", "transform": [{"calculate": "substring(format(datum.id, '05d'), 0, 2)", "as": "state_fips"}, {"filter": "datum.state_fips != '02' && datum.state_fips != '15' && datum.state_fips != '72'"}, {"lookup": "id", "from": {"data": {"url": "https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/unemployment.tsv"}, "key": "id", "fields": ["rate"]}}], "width": 350}, {"mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.1}, "encoding": {"color": {"field": "rate", "scale": {"domain": [0, 0.25], "scheme": "viridis"}, "title": "Unemployment Rate", "type": "quantitative"}, "opacity": {"condition": {"param": "hover_albers", "value": 1, "empty": false}, "value": 0.85}, "stroke": {"condition": {"param": "hover_albers", "value": "black", "empty": false}, "value": "white"}, "strokeWidth": {"condition": {"param": "hover_albers", "value": 1.2, "empty": false}, "value": 0.1}, "tooltip": [{"field": "rate", "format": ".1%", "title": "Rate", "type": "quantitative"}]}, "height": 250, "name": "view_9550d86364725842_1", "projection": {"type": "albers"}, "title": "albers", "transform": [{"calculate": "substring(format(datum.id, '05d'), 0, 2)", "as": "state_fips"}, {"filter": "datum.state_fips != '02' && datum.state_fips != '15' && datum.state_fips != '72'"}, {"lookup": "id", "from": {"data": {"url": "https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/unemployment.tsv"}, "key": "id", "fields": ["rate"]}}], "width": 350}]}, {"hconcat": [{"mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.1}, "encoding": {"color": {"field": "rate", "scale": {"domain": [0, 0.25], "scheme": "viridis"}, "title": "Unemployment Rate", "type": "quantitative"}, "opacity": {"condition": {"param": "hover_conicEqualArea", "value": 1, "empty": false}, "value": 0.85}, "stroke": {"condition": {"param": "hover_conicEqualArea", "value": "black", "empty": false}, "value": "white"}, "strokeWidth": {"condition": {"param": "hover_conicEqualArea", "value": 1.2, "empty": false}, "value": 0.1}, "tooltip": [{"field": "rate", "format": ".1%", "title": "Rate", "type": "quantitative"}]}, "height": 250, "name": "view_401e443468982db0_0", "projection": {"type": "conicEqualArea"}, "title": "conicEqualArea", "transform": [{"calculate": "substring(format(datum.id, '05d'), 0, 2)", "as": "state_fips"}, {"filter": "datum.state_fips != '02' && datum.state_fips != '15' && datum.state_fips != '72'"}, {"lookup": "id", "from": {"data": {"url": "https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/unemployment.tsv"}, "key": "id", "fields": ["rate"]}}], "width": 350}, {"mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.1}, "encoding": {"color": {"field": "rate", "scale": {"domain": [0, 0.25], "scheme": "viridis"}, "title": "Unemployment Rate", "type": "quantitative"}, "opacity": {"condition": {"param": "hover_conicConformal", "value": 1, "empty": false}, "value": 0.85}, "stroke": {"condition": {"param": "hover_conicConformal", "value": "black", "empty": false}, "value": "white"}, "strokeWidth": {"condition": {"param": "hover_conicConformal", "value": 1.2, "empty": false}, "value": 0.1}, "tooltip": [{"field": "rate", "format": ".1%", "title": "Rate", "type": "quantitative"}]}, "height": 250, "name": "view_04b26ef59c5d8fd0_1", "projection": {"type": "conicConformal"}, "title": "conicConformal", "transform": [{"calculate": "substring(format(datum.id, '05d'), 0, 2)", "as": "state_fips"}, {"filter": "datum.state_fips != '02' && datum.state_fips != '15' && datum.state_fips != '72'"}, {"lookup": "id", "from": {"data": {"url": "https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/unemployment.tsv"}, "key": "id", "fields": ["rate"]}}], "width": 350}]}], "data": {"url": "https://cdn.jsdelivr.net/npm/vega-datasets@v1.29.0/data/us-10m.json", "format": {"feature": "counties", "type": "topojson"}}, "params": [{"name": "hover_albersUsa", "select": {"type": "point", "fields": ["id"], "on": "mouseover"}, "views": ["view_0206279774762453_0"]}, {"name": "zoom_albersUsa", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales", "views": ["view_0206279774762453_0"]}, {"name": "hover_albers", "select": {"type": "point", "fields": ["id"], "on": "mouseover"}, "views": ["view_9550d86364725842_1"]}, {"name": "zoom_albers", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales", "views": ["view_9550d86364725842_1"]}, {"name": "hover_conicEqualArea", "select": {"type": "point", "fields": ["id"], "on": "mouseover"}, "views": ["view_401e443468982db0_0"]}, {"name": "zoom_conicEqualArea", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales", "views": ["view_401e443468982db0_0"]}, {"name": "hover_conicConformal", "select": {"type": "point", "fields": ["id"], "on": "mouseover"}, "views": ["view_04b26ef59c5d8fd0_1"]}, {"name": "zoom_conicConformal", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales", "views": ["view_04b26ef59c5d8fd0_1"]}], "title": {"text": "US County Unemployment Rates Across Different Map Projections (Contiguous US)", "anchor": "middle", "subtitle": ["Favorite projection: Albers USA \u2014 designed specifically for the United States.", "It preserves area and repositions Alaska & Hawaii for a compact national view."], "subtitleColor": "#666", "subtitleFontSize": 12}, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
