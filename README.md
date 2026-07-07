@@ -28,8 +28,8 @@ Each week folder contains:
 | [03](week03_altair_transform) | Color Scales & 2D Histograms | Diverging (PRGn) & sequential (Blues) colorblind-safe palettes, binned heatmaps, horizontal concatenation, tooltips |
 | [04](week04_color_schemes) | Scales, Axes & Legends | Log scales, small multiples, color scheme comparison (greys/viridis/rainbow/yelloworangered), color-blind accessibility (Coblis) |
 | [05](week05_multi_view_composition) | Multi-View Composition | `repeat`/`facet`/`layer` composition, dropdown-driven interactivity, click-to-isolate legends, Wong colorblind-safe palette, dark theme |
-| 06 | — | — |
-| 07 | — | — |
+| [06](week06_interaction) | Interaction | Linked brushing & cross-filtering, radio-button & legend-bound selections, `selection_interval`/`selection_point`, details-on-demand |
+| [07](week07_map_projections) | Geographic Projections | `mark_geoshape`, TopoJSON lookups, small multiples across map projections (albersUsa/albers/conicEqualArea/conicConformal), hover highlighting, pan/zoom |
 | 08 | — | — |
 
 > Repository is updated weekly throughout the semester.
