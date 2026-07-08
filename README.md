@@ -1,6 +1,7 @@
 # Advanced Data Visualization — FU Berlin 🇩🇪
 
 Assignments and exercises from the **Advanced Data Visualization on Artificial Intelligence** course at [Freie Universität Berlin](https://www.fu-berlin.de/), taken as part of an Erasmus exchange program.
+
 > 🎓 This is a graduate-level (PhD) Data Science course, taken as an undergraduate student during Erasmus.
 
 ## 👨‍💻 About
@@ -14,7 +15,6 @@ This repository documents my weekly progress through the course, covering modern
 ## 📁 Structure
 
 Each week folder contains:
-
 - `homework/` — My completed homework script (exported as `.py`, not `.ipynb`, for VSCode compatibility)
 - `submission/` — Self-contained HTML export submitted to instructor
 - `README.md` — Task description and implementation notes
@@ -30,7 +30,7 @@ Each week folder contains:
 | [05](week05_multi_view_composition) | Multi-View Composition | `repeat`/`facet`/`layer` composition, dropdown-driven interactivity, click-to-isolate legends, Wong colorblind-safe palette, dark theme |
 | [06](week06_interaction) | Interaction | Linked brushing & cross-filtering, radio-button & legend-bound selections, `selection_interval`/`selection_point`, details-on-demand |
 | [07](week07_map_projections) | Geographic Projections | `mark_geoshape`, TopoJSON lookups, small multiples across map projections (albersUsa/albers/conicEqualArea/conicConformal), hover highlighting, pan/zoom |
-| 08 | — | — |
+| [08](week08_heat_mortality_eda) | Heat & Mortality EDA | Multi-source data merging (World Mortality Dataset + Open-Meteo API), correlation vs. mutual information matrices, parallel coordinates (raw/standardized/normalized), scatter plot matrix (SPLOM) with linked brushing |
 
 > Repository is updated weekly throughout the semester.
 
